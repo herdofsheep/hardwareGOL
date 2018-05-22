@@ -127,14 +127,66 @@ void loop() {
 //count number of neighbours of each pin. (credit to Joan Soler-Adillon, https://processing.org/examples/gameoflife.html)
 int neighbours(int x, int y) {
 
- return  world[(x + 1) % SIZE][y] + 
-         world[x][(y + 1) % SIZE] + 
-         world[(x + SIZE - 1) % SIZE][y] + 
-         world[x][(y + SIZE - 1) % SIZE] + 
-         world[(x + 1) % SIZE][(y + 1) % SIZE] + 
-         world[(x + SIZE - 1) % SIZE][(y + 1) % SIZE] + 
-         world[(x + SIZE - 1) % SIZE][(y + SIZE - 1) % SIZE] + 
-         world[(x + 1) % SIZE][(y + SIZE - 1) % SIZE]; 
+      int neighbours = 0; // We'll count the neighbours
+
+      ////////////////////////////////////////
+      // Make the program loop the boundary //
+      ////////////////////////////////////////
+      
+      if ( x == SIZE-1 ){
+        for (int yy=y-1; yy<=y+1; yy++) {
+          if (((yy>=0)&&(yy<SIZE))) {
+            if (world[0][yy]==1){
+                neighbours ++; // Check alive neighbours and count them
+            }
+          }
+        }
+      }
+      else if ( x == 0 ){
+        for (int yy=y-1; yy<=y+1; yy++) {
+          if (((yy>=0)&&(yy<SIZE))) {
+            if (world[SIZE-1][yy]==1){
+                neighbours ++; // Check alive neighbours and count them
+            }
+          }
+        }
+      }
+      if ( y == SIZE-1 ){
+        for (int xx=x-1; xx<=x+1; xx++) {
+          if (((xx>=0)&&(xx<SIZE))) {
+            if (world[0][xx]==1){
+                neighbours ++; // Check alive neighbours and count them
+            }
+          }
+        }
+      }
+      else if ( y == 0 ){
+        for (int xx=x-1; xx<=x+1; xx++) {
+          if (((xx>=0)&&(xx<SIZE))) {
+            if (world[SIZE-1][xx]==1){
+                neighbours ++; // Check alive neighbours and count them
+            }
+          }
+        }
+      }
+      
+      /////////////////////////
+      // For all other cells //
+      /////////////////////////
+      
+      for (int xx=x-1; xx<=x+1; xx++) {
+        for (int yy=y-1; yy<=y+1; yy++) {  
+          if (((xx>=0)&&(xx<SIZE))&&((yy>=0)&&(yy<SIZE))) { // Make sure you are not out of bounds
+            if (!((xx==x)&&(yy==y))) { // Make sure to not check against self
+              if (world[xx][yy]==1){
+                neighbours ++; // Check alive neighbours and count them
+              }
+            } // End of if
+          } // End of if
+        } // End of yy loop
+      } //End of xx loop
+
+ return neighbours;
 
 }
 
