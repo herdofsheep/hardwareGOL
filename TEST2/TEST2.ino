@@ -40,54 +40,6 @@ int leds[SIZE][SIZE];
 //keeps track of where we are in the columns of LEDs later
 int columnCounter = 0;
 
-/////////////////////////////////
-// FRAMES IN THE LED ANIMATION //
-/////////////////////////////////
-
-//Board allocations for animations
-boolean board[4][SIZE][SIZE] = {
-  {
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 1, 1, 0, 0, 0 },
-    { 0, 0, 0, 1, 1, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 }
-  },
-  {
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 1, 1, 1, 1, 0, 0 },
-    { 0, 0, 1, 0, 0, 1, 0, 0 },
-    { 0, 0, 1, 0, 0, 1, 0, 0 },
-    { 0, 0, 1, 1, 1, 1, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 }
-  },
-  {
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 1, 1, 1, 1, 1, 1, 0 },
-    { 0, 1, 0, 0, 0, 0, 1, 0 },
-    { 0, 1, 0, 0, 0, 0, 1, 0 },
-    { 0, 1, 0, 0, 0, 0, 1, 0 },
-    { 0, 1, 0, 0, 0, 0, 1, 0 },
-    { 0, 1, 1, 1, 1, 1, 1, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 }
-  },
-  {
-    { 1, 1, 1, 1, 1, 1, 1, 1 },
-    { 1, 0, 0, 0, 0, 0, 0, 1 },
-    { 1, 0, 0, 0, 0, 0, 0, 1 },
-    { 1, 0, 0, 0, 0, 0, 0, 1 },
-    { 1, 0, 0, 0, 0, 0, 0, 1 },
-    { 1, 0, 0, 0, 0, 0, 0, 1 },
-    { 1, 0, 0, 0, 0, 0, 0, 1 },
-    { 1, 1, 1, 1, 1, 1, 1, 1 }
-  }
-};
-
 //////////////////////////////
 // SETUP, RUN ONCE AT START //
 //////////////////////////////
@@ -107,7 +59,7 @@ void loop() {
   
   //if the refresh button is pressed
   if(digitalRead(refreshPin) == HIGH){
-    playAnimation();
+    onLeds();
   }
   
   else{
@@ -120,16 +72,12 @@ void loop() {
 // LED ANIMATION FUNCTIONS //
 /////////////////////////////
 
-//Animate the LEDs
-void playAnimation(){
-  for ( int boardNumber = 0; boardNumber < 4; boardNumber++ ){
-    for ( int i = 0; i < 8; i++ ) {
-      for ( int j = 0; j < 8; j++ ) {
-        leds[i][j] = board[boardNumber][i][j];
-      }
+// Fill display array
+void onLeds() {
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      leds[i][j] = 1;
     }
-    //pause between generations
-    delay(DELAY);
   }
 }
 

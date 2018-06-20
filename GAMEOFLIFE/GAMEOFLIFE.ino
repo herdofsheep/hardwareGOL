@@ -25,6 +25,9 @@
 //Tail button refresh pin
 int refreshPin = A5;
 
+//Unused pin for random number generation
+int unusedPin = 2;
+
 //Correlation between rows and pins:
 //Rows: cathodes, negatively charged, don't pass through resistors
 //ROWS ON  LED MULTIPLEX:         1,  2,  3,  4,  5,  6,  7,  8
@@ -68,7 +71,7 @@ void setup() {
   //Establish LEDs allocation to game of life members.
   setupLeds();
   //Create a random seed for random field generation for the game of life.
-  randomSeed(analogRead(20));
+  randomSeed(analogRead(unusedPin));
   //Run the function the build a field of random starters for the game of life.
   setupRandomField();
 }
