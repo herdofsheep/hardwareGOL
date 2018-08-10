@@ -30,7 +30,7 @@
 /////////////////////////////////                        ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-//time managing library
+// Timing management library
 #include <FrequencyTimer2.h>
 
 /////////////////////
@@ -57,23 +57,48 @@ int rows[8] = {10, 11, 12, 13, A1, A2, A3, A4};
 
 int cols[8] = {2, 3, 4, 5, 6, 7, 8, 9};
 
+/////////////////////////////////////////
+// ELECTRODEREADING TRIGGER PARAMETERS //
+/////////////////////////////////////////
+
+// Maximum number of readings that can be taken for averaging electrode readings
+int readingsMax = 30;
+// Count number of discrete readings which have been taken
+// Determined by whether there has been a change in the pin value
+int readings1, readings2;
+// Store the previous value, to determine whether pin value has changed
+int previousReading1, previousReading2;
+// Average values over a few readings to get less noisy data
+int sumInput1, sumInput2;
+int averageInput1, averageInput2;
+// Check whether trigger value is big enough to refresh the GOL
+int triggerCounter = 0;
+// Value triggerCounter has to reach to refresh the GOL.
+int triggerMaxValue;
+// Value change between averaged readings that qualifies as a spike
+int spikeQualifier = 30;
+// Difference between pin readings- helps to eliminate noise from electronics
+int difference;
+//placeholder for previous value of 'difference' to identify spikes in the data.
+int previousDifference;
+
 /////////////////////////////
 // GAME OF LIFE PARAMETERS //
 /////////////////////////////
 
-//pause time between updates
+// Pause time between updates
 #define DELAY 10
-//Size of the LED matrix (number of LEDS in a column/row)
+// Size of the LED matrix (number of LEDS in a column/row)
 #define SIZE 8
-//The Matrix of LEDs, to keep track of output
+// The Matrix of LEDs, to keep track of output
 int leds[SIZE][SIZE];
-//State of members of the game of Life
+// State of members of the game of Life
 int world[SIZE][SIZE];
-//State of members of the game of life when updating
+// State of members of the game of life when updating
 int worldBuffer[SIZE][SIZE];
-//Percentage of members of the game of life to be alive on refresh.
+// Percentage of members of the game of life to be alive on refresh.
 long spawnDensity = 60;
-//keeps track of where we are in the columns of LEDs later
+// Keeps track of where we are in the columns of LEDs later
 int columnCounter = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +126,6 @@ void setup() {
 
   //Frequency timer stuff: helps with timing of Life steps. 
   //(credit to Andrew, https://pastebin.com/f22bfe94d)
-  
   // Turn off toggling of pin 11 and 3
   FrequencyTimer2::disable();
   // Set refresh rate (interrupt timeout period)
@@ -128,18 +152,6 @@ void loop() {
 
   //run trigger funtion to setupRandomField (reset the GOL) if trigger is reached.
   trigger();
-  
-  //if the refresh button is pressed
-  if(trigger == 1){
-     //Create a random seed for random field generation for the game of life.
-     randomSeed(analogRead(plantPin1));
-     //Run the function the build a field of random starters for the game of life.
-     setupRandomField();
-  }
-  
-  else{
-
-  }
   
   // Display current generation
   for (int i = 0; i < SIZE; i++) {
@@ -201,15 +213,77 @@ void clearLeds() {
 ///////////////////////                                                  ///////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-void electrodesCounter() {
 
+////////////////////////////////////////////////////////////////////
+// AVERAGE ELECTRODES VALUES OVER A FEW READINGS TO REDUCE NOISE  //
+////////////////////////////////////////////////////////////////////
+
+void electrodesCounter() {
   
-  
+  sumInput1 = 0;
+  sumInput2 = 0;
+  readings1 = 0;
+  readings2 = 0;
+
+  //make analog reading of plantPin1 the average of a few measurements.
+  for(int i=0; i<readingsMax; i++){
+
+    //if the reading has changed, add it to the average
+    if(analogRead(plantPin1) != previousReading1){
+      readings1 ++;
+      sumInput1 += analogRead(plantPin1);
+    }
+    //make 'previousReading' placeholder value = reading to check when it changes.
+    previousReading1 = analogRead(plantPin1);
+    
+  }
+
+  // Brief delay to allow for reading of two analog pins without interference. 
+  // Wait for the analog-to-digital converter to stabilize after the last reading:
+  // NOTE: CHECK IF THIS MESSES WITH GAME OF LIFE TIMING.
+  delay(10);
+
+  //make analog reading of plantPin2 the average of a few measurements.
+  for(int i=0; i<readingsMax; i++){
+    
+    if(analogRead(plantPin2) != previousReading2){
+      readings2 ++;
+      sumInput2 += analogRead(plantPin2);
+    }
+    //make 'previousReading' placeholder value = reading to check when it changes.
+    previousReading2 = analogRead(plantPin2);
+    
+  }
+
+  //calculate the average value of a few readings.
+  averageInput1 = sumInput1/readings1;
+  averageInput2 = sumInput2/readings2;
+
+  difference = abs( input1 - input2 );
+
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
+// IDENTIFY SPIKES IN ELECTRODE READINGS TO TRIGGER GOL UNDER SUFFICIENT ACTIVITY  //
+/////////////////////////////////////////////////////////////////////////////////////
 
 void trigger() {
 
+  // If there has been a big spike in electrode reading, add to triggerCounter.
+  if ( abs( difference - previousDifference ) > spikeQualifier ){
+    triggerCounter ++;
+  }
+
+  if ( triggerCounter > 60 ){
+    // Reset the triggerCounter
+    triggerCounter = 0;
+    // Create a random seed for random field generation for the game of life.
+    randomSeed(analogRead(plantPin1));
+    // Run the function the build a field of random starters to reset the GOL.
+    setupRandomField();
+  }
   
+  differencePrev = difference;
   
 }
 
@@ -240,7 +314,7 @@ void setupRandomField() {
 }
 
 ///////////////////////////////////////
-//     GOL BIRTH AND DEATH CYCLE     //
+//     GOL BIRTH AND DEATH RULES     //
 ///////////////////////////////////////
 
 void GOL(){
@@ -343,9 +417,3 @@ int neighbours(int x, int y) {
  return neighbours;
  
 }
-
-
-
-
-
-

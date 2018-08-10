@@ -28,8 +28,8 @@
 int readingsMax;
 int readings1, readings2;
 int previousReading1, previousReading2;
+int sumInput1, sumInput2;
 int averageInput1, averageInput2;
-int input1, input2;
 int pin1, pin2;
 
 
@@ -43,8 +43,8 @@ void setup() {
 
 void loop() {
 
-  averageInput1 = 0;
-  averageInput2 = 0;
+  sumInput1 = 0;
+  sumInput2 = 0;
   readings1 = 0;
   readings2 = 0;
 
@@ -54,13 +54,15 @@ void loop() {
     //if the reading has changed, add it to the average
     if(analogRead(pin1) != previousReading1){
       readings1 ++;
-      averageInput1 += analogRead(pin1);
+      sumInput1 += analogRead(pin1);
     }
     //make 'previousReading' placeholder value = reading to check when it changes.
     previousReading1 = analogRead(pin1);
     
   }
 
+  // wait a bit for the analog-to-digital converter to stabilize after the last
+  // reading:
   delay(10);
 
   //make analog reading 2 the average of a few measurements.
@@ -68,7 +70,7 @@ void loop() {
     
     if(analogRead(pin2) != previousReading2){
       readings2 ++;
-      averageInput2 += analogRead(pin2);
+      sumInput2 += analogRead(pin2);
     }
     //make 'previousReading' placeholder value = reading to check when it changes.
     previousReading2 = analogRead(pin2);
@@ -76,17 +78,16 @@ void loop() {
   }
 
   //calculate the average value of a few readings.
-  input1 = averageInput1/readings1;
-  input2 = averageInput2/readings2;
+  averageInput1 = sumInput1/readings1;
+  averageInput2 = sumInput2/readings2;
   
   // send the value of analog input 0:
   Serial.print("A");
-  Serial.println(input1);
-  // wait a bit for the analog-to-digital converter to stabilize after the last
-  // reading:
+  Serial.println(averageInput1);
+
   // send the value of analog input 1:
   Serial.print("B");
-  Serial.println(input2);
+  Serial.println(averageInput2);
 
   int difference = abs(input1-input2);
 
