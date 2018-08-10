@@ -17,7 +17,7 @@ int unusedPin = 2;
 //ATMEGA328P-PU PINS (CODE):      11, 12, 13, A0, A1, A2, A3, A4
 //ATMEGA328P-PU PINS (HARDWARE):  17, 18, 19, 23, 24, 25, 26, 27
 
-int rows[8] = {11, 12, 13, A0, A1, A2, A3, A4};
+int rows[8] = {10, 11, 12, 13, A1, A2, A3, A4};
 
 //Correlation between columns and pins:
 //Cols: anodes, positively charged, pass through resistors
@@ -25,7 +25,7 @@ int rows[8] = {11, 12, 13, A0, A1, A2, A3, A4};
 //ATMEGA328P-PU PINS (CODE):      3,  4, 5,  6,  7,  8,  9,  10
 //ATMEGA328P-PU PINS (HARDWARE):  5,  6, 11, 12, 13, 14, 15, 16
 
-int cols[8] = {3, 4, 5, 6, 7, 8, 9, 10};
+int cols[8] = {2, 3, 4, 5, 6, 7, 8, 9};
 
 //////////////////////////
 // MULTIPLEX PARAMETERS //
@@ -37,8 +37,6 @@ int cols[8] = {3, 4, 5, 6, 7, 8, 9, 10};
 #define SIZE 8
 //The Matrix of LEDs, to keep track of output
 int leds[SIZE][SIZE];
-//keeps track of where we are in the columns of LEDs later
-int columnCounter = 0;
 
 //////////////////////////////
 // SETUP, RUN ONCE AT START //
@@ -59,28 +57,6 @@ void loop() {
   
 }
 
-/////////////////////////////
-// LED ANIMATION FUNCTIONS //
-/////////////////////////////
-
-// Fill display array
-void onLeds() {
-  for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      leds[i][j] = 1;
-    }
-  }
-}
-
-// Clear display array
-void clearLeds() {
-  for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      leds[i][j] = 0;
-    }
-  }
-}
-
 //////////////////////////////////////
 // FUNCTIONS TO MANAGE MULTIPLEXING //
 //////////////////////////////////////
@@ -92,12 +68,8 @@ void setupLeds() {
   for (int i = 0; i < 8; i++) {
     pinMode(cols[i], OUTPUT);
     pinMode(rows[i], OUTPUT);
-    digitalWrite(cols[i], LOW);
-    digitalWrite(rows[i], LOW);
   }
-
-  clearLeds();
-
+  
   //Frequency timer stuff: helps with timing. (credit to Andrew, https://pastebin.com/f22bfe94d)
   // Turn off toggling of pin 11 and 3
   FrequencyTimer2::disable();
@@ -114,16 +86,8 @@ void setupLeds() {
 void display() {
   for (int row = 0; row < 8; row++) {
     for (int col = 0; col < 8; col++) {
-      if (digitalRead(refreshPin) == HIGH){
-        if leds(){
-          digitalWrite(rows[row], LOW);  // Turn on row
-          digitalWrite(cols[col], HIGH); // Turn on column
-        }
-      }
-      else {
-        digitalWrite(rows[row], HIGH);  // Turn off row
-        digitalWrite(cols[col], LOW); // Turn off column
-      }
+      digitalWrite(rows[row], LOW);  // Turn on row
+      digitalWrite(cols[col], HIGH); // Turn on column
     }
   }
 }
