@@ -28,14 +28,14 @@
 
   void draw () {
    
-    //// draw the line for input1:
-    //strokeWeight(1);
-    //stroke(127, 34, 255);
-    //line(xPos-1, height - input1Prev, xPos, height - input1);
+    // draw the line for input1:
+    strokeWeight(1);
+    stroke(127, 34, 255);
+    line(xPos-1, height - input1Prev, xPos, height - input1);
     
-    //// draw the line for input2:
-    //stroke(30, 255, 200);
-    //line(xPos-1, height - input2Prev, xPos, height - input2);
+    // draw the line for input2:
+    stroke(30, 255, 200);
+    line(xPos-1, height - input2Prev, xPos, height - input2);
     
     //draw the difference line
     strokeWeight(1);
@@ -45,11 +45,11 @@
     input1Prev = input1;
     input2Prev = input2;
     
-    if (difference-differencePrev > 30){
+    if (difference-differencePrev > 10){
       triggerCounter ++;
     }
     
-    if (triggerCounter > 60){
+    if (triggerCounter > 5){
       trigger();
       triggerCounter = 0;
     }
@@ -84,19 +84,19 @@
       if( firstChar == val1 ){ 
         // convert to an int and map to the screen height:
         inByteA = float(electrodeReading);      
-        input1 = map(inByteA, 0, 1023, 0, height);
+        input1 = map(inByteA, 0, 2000, 0, height);
       }
       
       else if( firstChar == val2 ){            
       // convert to an int and map to the screen height:
         inByteB = float(electrodeReading);
-        input2 = map(inByteB, 0, 1023, 0, height);
+        input2 = map(inByteB, 0, 2000, 0, height);
       }
       
       else if( firstChar == val3 ){            
       // convert to an int and map to the screen height:
         inByteC = float(electrodeReading);
-        difference = map(inByteC, 0, 400, 0, height);
+        difference = map(inByteC, 0, 2000, 0, height);
       }
       
       else{

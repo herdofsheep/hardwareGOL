@@ -36,7 +36,7 @@ int pin1, pin2;
 void setup() {
   // initialize the serial communication:
   Serial.begin(9600);
-  readingsMax = 30;
+  readingsMax = 100;
   pin1 = A0;
   pin2 = A5;
 }
@@ -89,7 +89,7 @@ void loop() {
   Serial.print("B");
   Serial.println(averageInput2);
 
-  int difference = abs(input1-input2);
+  int difference = abs(averageInput1-averageInput2);
 
   Serial.print("C");
   Serial.println(difference);
