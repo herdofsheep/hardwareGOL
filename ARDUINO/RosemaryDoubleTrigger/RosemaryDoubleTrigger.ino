@@ -2,24 +2,25 @@
 ///////////////                                                          ///////////////
 ///////////////  Name: MEGAN BATES                                       ///////////////
 ///////////////                                                          ///////////////
-///////////////  Digital Symbiote (Trigger)                              ///////////////
-///////////////  This is combined with GOL arduino code on ARMega        ///////////////
-///////////////  installed in custom circuit board hardware.             ///////////////
+///////////////  Digital Symbiote                                 ///////////////
+///////////////  To combine with Hardware GOL Designs 1,2,3 etc.         ///////////////
 ///////////////                                                          ///////////////
 ///////////////  Sufficient activity from an electrode adds values to    ///////////////
-///////////////  'trigger'. Once this value is large enough, the relay   ///////////////
-///////////////  connected to the 'powerSupply' pin is switched off and  ///////////////
-///////////////  on. This hard-resets the custom circuitboards connected ///////////////
-///////////////  via the relay, which restarts the Game Of Life.         ///////////////
-///////////////  This means that the electrodes, and in turn, the Game   ///////////////
-///////////////  of  Life, is triggered by the plants.                   ///////////////
+///////////////  'trigger'. Once this value is large enough, the GOL     ///////////////
+///////////////  is refreshed. This causes intermittent refreshing of    ///////////////
+///////////////  the activity level of the LEDs- triggered by the        ///////////////
+///////////////  plants. Without the plant, activity levels will not     ///////////////
+///////////////  be high enough for the GOL to ever refresh and the      ///////////////
+///////////////  LEDs will be static.                                    ///////////////
 ///////////////                                                          ///////////////
 ///////////////  References:                                             ///////////////
-///////////////  1:'FellaMegaOld' (comment at https://www.instructables. ///////////////
-///////////////  com/id/two-ways-to-reset-arduino-in-software/) method   ///////////////
-///////////////  to hard-reset the arduino which makes the arduino more  ///////////////
-///////////////  robust for running programs for a very long time (such  ///////////////
-///////////////  as in exhibitions)                                      ///////////////
+///////////////  1: https://processing.org/examples/gameoflife.html      ///////////////
+///////////////  (The game of life rules demonstrated in an IDE where I  ///////////////
+///////////////  could play with parameters and build my own variations  ///////////////
+///////////////  on the setup and rules quickly and easily.)             ///////////////
+///////////////  2: https://pastebin.com/f22bfe98d                       ///////////////
+///////////////  Correct method for multiplexing an LED matrix using     ///////////////
+///////////////  the arduino FrequencyTimer library                      ///////////////
 ///////////////                                                          ///////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -28,10 +29,6 @@
 /////////////////////////////////    INITIALISATIONS     ///////////////////////////////
 /////////////////////////////////                        ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////
-// SET UP 'WATCHDOG' ARDUINO RESET LIBRARY //
-/////////////////////////////////////////////
 
 #include <avr/wdt.h>
 
@@ -53,9 +50,9 @@ int powerSupply = 2;
 int plantPin1 = A0;
 int plantPin2 = A5;
 
-//////////////////////////////////////////
-// ELECTRODE READING TRIGGER PARAMETERS //
-//////////////////////////////////////////
+/////////////////////////////////////////
+// ELECTRODEREADING TRIGGER PARAMETERS //
+/////////////////////////////////////////
 
 // Maximum number of readings that can be taken for averaging electrode readings
 int readingsMax = 100;
@@ -83,6 +80,13 @@ boolean triggerCheck = 0;
 int difference;
 //placeholder for previous value of 'difference' to identify spikes in the data.
 int previousDifference;
+
+/////////////////////////////
+// GAME OF LIFE PARAMETERS //
+/////////////////////////////
+
+// Pause time between updates
+#define DELAY 10
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////                           ////////////////////////////
@@ -118,7 +122,7 @@ void loop() {
   //run electrodesCounter function to count signals from plant electrodes 
   electrodesCounter();
 
-  //run trigger funtion to reset the arduino (and power supply) if trigger is reached.
+  //run trigger funtion to reset the power if trigger is reached.
   trigger();
 
   
@@ -196,7 +200,7 @@ void trigger() {
     triggerCounter = 0;
     reset();
   }
-
+  
   previousDifference = difference;
   
 }

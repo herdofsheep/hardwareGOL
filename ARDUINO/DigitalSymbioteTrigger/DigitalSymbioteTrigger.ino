@@ -3,7 +3,9 @@
 ///////////////  Name: MEGAN BATES                                       ///////////////
 ///////////////                                                          ///////////////
 ///////////////  Digital Symbiote (Trigger)                              ///////////////
-///////////////  This is combined with GOL arduino code on ARMega        ///////////////
+///////////////  To to be booted on an Ardunio Uno with corresponding    ///////////////
+///////////////  relay breadboard.                                       ///////////////
+///////////////  This is combined with GOL arduino code on ATMega        ///////////////
 ///////////////  installed in custom circuit board hardware.             ///////////////
 ///////////////                                                          ///////////////
 ///////////////  Sufficient activity from an electrode adds values to    ///////////////
@@ -12,14 +14,19 @@
 ///////////////  on. This hard-resets the custom circuitboards connected ///////////////
 ///////////////  via the relay, which restarts the Game Of Life.         ///////////////
 ///////////////  This means that the electrodes, and in turn, the Game   ///////////////
-///////////////  of  Life, is triggered by the plants.                   ///////////////
+///////////////  of  Life, is triggered by the plants electrodes attach  ///////////////
+///////////////  to.                                                     ///////////////
 ///////////////                                                          ///////////////
 ///////////////  References:                                             ///////////////
-///////////////  1:'FellaMegaOld' (comment at https://www.instructables. ///////////////
-///////////////  com/id/two-ways-to-reset-arduino-in-software/) method   ///////////////
-///////////////  to hard-reset the arduino which makes the arduino more  ///////////////
-///////////////  robust for running programs for a very long time (such  ///////////////
-///////////////  as in exhibitions)                                      ///////////////
+///////////////  1: https://itp.nyu.edu/physcomp/labs/motors-and-        ///////////////
+///////////////  transistors/using-a-transistor-to-control-high-current- ///////////////
+///////////////  loads-with-an-arduino/ thorough guide to building and   ///////////////
+///////////////  controlling relays, using arduino.                      ///////////////
+///////////////  2: FellaMegaOld's (comment at https://www.              ///////////////
+///////////////  instructables.com/id/two-ways-to-reset-arduino-in-      ///////////////
+///////////////  software/) method to hard-reset the arduino which makes ///////////////
+///////////////  the arduino more robust for running programs for a very ///////////////
+///////////////  long time (such as in exhibitions)                      ///////////////
 ///////////////                                                          ///////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
